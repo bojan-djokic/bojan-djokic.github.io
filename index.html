@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bojan Djokić — Cloud Security Architect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #080c14;
+    --surface:   #0e1521;
+    --card:      #111927;
+    --border:    rgba(255,255,255,0.06);
+    --accent:    #38bdf8;
+    --amber:     #f59e0b;
+    --green:     #34d399;
+    --text:      #e2e8f0;
+    --muted:     #64748b;
+    --mono:      'DM Mono', monospace;
+    --head:      'Syne', sans-serif;
+    --body:      'DM Sans', sans-serif;
+    --radius:    12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+  ::selection { background: rgba(56,189,248,0.3); }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
+
+  #grid-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none; opacity: 0.3;
+  }
+
+  .guide-card-link {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.guides-grid > a {
+  display: block;
+  height: 100%;
+}
+
+.guide-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.guide-desc {
+  flex-grow: 1;
+}
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 4rem;
+    background: rgba(8,12,20,0.75);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: var(--head); font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    font-family: var(--mono); font-size: 0.75rem;
+    color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase;
+    transition: color 0.2s; position: relative;
+  }
+  .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width 0.25s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    font-family: var(--mono); font-size: 0.73rem;
+    padding: 0.5rem 1.25rem; border: 1px solid var(--accent); color: var(--accent);
+    border-radius: 4px; letter-spacing: 0.08em; text-transform: uppercase;
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-cta:hover { background: var(--accent); color: var(--bg); }
+
+  /* LAYOUT */
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 2rem; }
+  section { padding: 8rem 0; position: relative; z-index: 1; }
+  .section-label {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+  .section-label::before { content: ''; display: block; width: 28px; height: 1px; background: var(--accent); }
+  h2.section-title {
+    font-family: var(--head); font-size: clamp(1.9rem, 4vw, 2.9rem);
+    font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;
+    color: var(--text); margin-bottom: 1rem;
+  }
+  .section-sub { color: var(--muted); max-width: 540px; font-size: 1rem; margin-bottom: 3.5rem; }
+
+  /* HERO */
+  #hero { min-height: 100vh; display: flex; align-items: center; padding-top: 5rem; }
+  .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 0.75rem;
+    color: var(--green); letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-eyebrow .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 6px var(--green); animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot { 0%, 100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(0.75); } }
+  h1.hero-name {
+    font-family: var(--head); font-weight: 800; font-size: clamp(3rem, 6vw, 5rem);
+    letter-spacing: -0.04em; line-height: 1.0; color: var(--text); margin-bottom: 0.5rem;
+  }
+  h1.hero-name em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent) 0%, #818cf8 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-title { font-family: var(--mono); font-size: 0.88rem; color: var(--amber); margin-bottom: 1.75rem; letter-spacing: 0.02em; }
+  .hero-desc { color: #94a3b8; font-size: 1rem; line-height: 1.8; max-width: 480px; margin-bottom: 2.5rem; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--accent); color: var(--bg);
+    font-family: var(--mono); font-size: 0.78rem; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.85rem 1.75rem; border-radius: 4px; transition: opacity 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    border: 1px solid var(--border); color: var(--muted);
+    font-family: var(--mono); font-size: 0.78rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.85rem 1.75rem; border-radius: 4px; transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .hero-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+  .badge {
+    font-family: var(--mono); font-size: 0.65rem; padding: 0.28rem 0.7rem; border-radius: 3px;
+    border: 1px solid rgba(56,189,248,0.25); color: var(--accent); background: rgba(56,189,248,0.05);
+  }
+  .badge.amber { border-color: rgba(245,158,11,0.3); color: var(--amber); background: rgba(245,158,11,0.05); }
+
+  /* HERO CARD */
+  .hero-card {
+    position: relative; background: var(--card);
+    border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem; text-align: center;
+  }
+  .hero-card::before {
+    content: ''; position: absolute; inset: -1px; border-radius: 16px;
+    background: linear-gradient(135deg, rgba(56,189,248,0.2), transparent 60%); z-index: -1;
+  }
+  .avatar-ring {
+    width: 148px; height: 148px; border-radius: 50%; margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, var(--accent), #818cf8); padding: 3px;
+  }
+  .avatar-inner {
+    width: 100%; height: 100%; border-radius: 50%; background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--head); font-size: 3rem; font-weight: 800; color: var(--accent); overflow: hidden;
+  }
+  .avatar-inner img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-card-name { font-family: var(--head); font-weight: 700; font-size: 1.25rem; color: var(--text); margin-bottom: 0.2rem; }
+  .hero-card-sub { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 1.25rem; }
+  .cert-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center; margin-bottom: 1.5rem; }
+  .cert-chip {
+    font-family: var(--mono); font-size: 0.58rem; padding: 0.22rem 0.55rem; border-radius: 3px;
+    background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3); color: var(--amber);
+  }
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border); border-radius: 8px; overflow: hidden;
+  }
+  .stat { background: var(--surface); padding: 0.9rem 0.5rem; text-align: center; }
+  .stat-val { font-family: var(--head); font-size: 1.5rem; font-weight: 800; color: var(--accent); line-height: 1; }
+  .stat-lbl { font-family: var(--mono); font-size: 0.58rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.2rem; }
+  .lang-chips { display: flex; gap: 0.35rem; justify-content: center; flex-wrap: wrap; margin-top: 1.1rem; }
+  .lang-chip {
+    font-family: var(--mono); font-size: 0.58rem; padding: 0.2rem 0.55rem; border-radius: 3px;
+    background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.18); color: var(--accent);
+  }
+
+  /* ABOUT */
+  #about { background: linear-gradient(180deg, transparent, rgba(56,189,248,0.02) 50%, transparent); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1.35fr; gap: 5rem; align-items: start; }
+  .about-visual { position: sticky; top: 7rem; }
+  .about-photo-frame {
+    position: relative; border-radius: 12px; overflow: hidden;
+    aspect-ratio: 4/5; background: var(--card); border: 1px solid var(--border);
+  }
+  .about-photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+  .about-photo-placeholder {
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    font-family: var(--head); font-size: 6rem; font-weight: 800; color: rgba(56,189,248,0.1);
+  }
+  .about-corner {
+    position: absolute; bottom: 1.25rem; left: 1.25rem;
+    background: rgba(8,12,20,0.88); backdrop-filter: blur(10px);
+    border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 1rem;
+  }
+  .about-corner-label { font-family: var(--mono); font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .about-corner-val { font-family: var(--head); font-size: 0.9rem; font-weight: 700; color: var(--accent); }
+  .about-text p { color: #94a3b8; margin-bottom: 1.25rem; line-height: 1.8; }
+  .about-text p strong { color: var(--text); font-weight: 500; }
+  .clients-label { font-family: var(--mono); font-size: 0.67rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin: 1.75rem 0 0.8rem; }
+  .clients-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .client-tag {
+    font-family: var(--mono); font-size: 0.67rem; padding: 0.26rem 0.65rem; border-radius: 4px;
+    border: 1px solid var(--border); color: var(--muted); transition: border-color 0.2s, color 0.2s;
+  }
+  .client-tag:hover { border-color: var(--accent); color: var(--accent); }
+  .fw-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.4rem; }
+  .fw-tag {
+    font-family: var(--mono); font-size: 0.62rem; padding: 0.22rem 0.6rem; border-radius: 3px;
+    background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.22); color: var(--green);
+  }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 1.5rem; }
+  .timeline::before { content: ''; position: absolute; left: 0; top: 0.5rem; bottom: 0; width: 1px; background: var(--border); }
+  .tl-item { position: relative; margin-bottom: 3rem; padding-left: 2rem; }
+  .tl-dot {
+    position: absolute; left: -1.5rem; top: 0.55rem;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 0 4px rgba(56,189,248,0.12);
+  }
+  .tl-dot.amber { background: var(--amber); box-shadow: 0 0 0 4px rgba(245,158,11,0.12); }
+  .tl-dot.green { background: var(--green); box-shadow: 0 0 0 4px rgba(52,211,153,0.15); animation: pulse-dot 2s ease-in-out infinite; }
+  .tl-meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.35rem; }
+  .tl-period { font-family: var(--mono); font-size: 0.67rem; color: var(--muted); letter-spacing: 0.06em; }
+  .tl-type {
+    font-family: var(--mono); font-size: 0.6rem; padding: 0.1rem 0.5rem; border-radius: 3px;
+    background: rgba(56,189,248,0.07); color: var(--accent); border: 1px solid rgba(56,189,248,0.18);
+  }
+  .tl-type.amber { background: rgba(245,158,11,0.07); color: var(--amber); border-color: rgba(245,158,11,0.2); }
+  .tl-role { font-family: var(--head); font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 0.1rem; }
+  .tl-company { font-family: var(--mono); font-size: 0.76rem; color: var(--amber); margin-bottom: 0.35rem; }
+  .tl-client { font-family: var(--mono); font-size: 0.66rem; color: var(--muted); margin-bottom: 0.65rem; }
+  .tl-client span { color: var(--accent); }
+  .tl-desc { color: #94a3b8; font-size: 0.875rem; line-height: 1.75; }
+  .tl-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.75rem; }
+  .tl-tag {
+    font-family: var(--mono); font-size: 0.6rem; padding: 0.16rem 0.5rem; border-radius: 3px;
+    background: rgba(255,255,255,0.03); color: var(--muted); border: 1px solid var(--border);
+  }
+
+  /* TECH */
+  .tech-categories { display: flex; flex-direction: column; gap: 2.25rem; }
+  .tech-cat-label {
+    font-family: var(--mono); font-size: 0.67rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.85rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .tech-cat-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .tech-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tech-pill {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.42rem 0.85rem; border-radius: 6px;
+    background: var(--card); border: 1px solid var(--border);
+    font-family: var(--mono); font-size: 0.7rem; color: var(--text);
+    transition: border-color 0.2s, color 0.2s, background 0.2s; cursor: default;
+  }
+  .tech-pill:hover { border-color: var(--accent); color: var(--accent); background: rgba(56,189,248,0.04); }
+  .tech-pill .lvl { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .lvl-expert { background: var(--accent); }
+  .lvl-advanced { background: var(--amber); }
+  .lvl-proficient { background: #818cf8; }
+  .tech-legend { display: flex; gap: 1.5rem; margin-bottom: 2rem; font-family: var(--mono); font-size: 0.64rem; color: var(--muted); }
+  .tech-legend-item { display: flex; align-items: center; gap: 0.4rem; }
+
+  /* PROJECTS */
+  .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+  .project-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.65rem;
+    position: relative; overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s; display: flex; flex-direction: column;
+  }
+  .project-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .project-card:hover { border-color: rgba(56,189,248,0.28); transform: translateY(-3px); }
+  .project-card:hover::before { opacity: 1; }
+  .project-card.featured {
+    grid-column: span 2;
+    background: linear-gradient(135deg, rgba(56,189,248,0.04), var(--card));
+    border-color: rgba(56,189,248,0.18);
+  }
+  .project-featured-badge {
+    font-family: var(--mono); font-size: 0.6rem; color: var(--amber);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 0.7rem;
+  }
+  .project-featured-badge::before { content: '★'; }
+  .project-title { font-family: var(--head); font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+  .project-client { font-family: var(--mono); font-size: 0.67rem; color: var(--amber); margin-bottom: 0.65rem; }
+  .project-desc { color: #94a3b8; font-size: 0.845rem; line-height: 1.75; flex: 1; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.9rem; }
+  .project-tag {
+    font-family: var(--mono); font-size: 0.59rem; padding: 0.16rem 0.52rem; border-radius: 3px;
+    background: rgba(56,189,248,0.06); color: var(--accent); border: 1px solid rgba(56,189,248,0.16);
+  }
+
+  /* GUIDES */
+  .guides-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+  .guide-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.4rem;
+    transition: border-color 0.25s, transform 0.25s; cursor: pointer;
+  }
+  .guide-card:hover { border-color: rgba(56,189,248,0.28); transform: translateY(-2px); }
+  .guide-icon { font-size: 1.55rem; margin-bottom: 0.7rem; display: block; }
+  .guide-category { font-family: var(--mono); font-size: 0.59rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+  .guide-title { font-family: var(--head); font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; line-height: 1.3; }
+  .guide-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+  .guide-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 0.9rem; padding-top: 0.65rem; border-top: 1px solid var(--border);
+  }
+  .guide-read { font-family: var(--mono); font-size: 0.62rem; color: var(--muted); }
+  .guide-arrow { color: var(--accent); font-size: 0.85rem; transition: transform 0.2s; }
+  .guide-card:hover .guide-arrow { transform: translateX(4px); }
+
+  /* CONTACT */
+  .contact-inner { max-width: 720px; margin: 0 auto; text-align: center; }
+  .contact-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 3.5rem 3rem; position: relative; overflow: hidden;
+  }
+  .contact-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(56,189,248,0.07), transparent 70%);
+    pointer-events: none;
+  }
+  .contact-email {
+    font-family: var(--head); font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+    font-weight: 800; color: var(--accent); display: block;
+    margin: 1.25rem 0 0.5rem; letter-spacing: -0.02em; transition: opacity 0.2s;
+  }
+  .contact-email:hover { opacity: 0.75; }
+  .contact-phone { font-family: var(--mono); font-size: 0.82rem; color: var(--muted); margin-bottom: 0.75rem; }
+  .contact-links { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+  .contact-link {
+    font-family: var(--mono); font-size: 0.7rem; padding: 0.6rem 1.25rem; border-radius: 4px;
+    border: 1px solid var(--border); color: var(--muted);
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: border-color 0.2s, color 0.2s; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border); padding: 2rem; text-align: center;
+    font-family: var(--mono); font-size: 0.67rem; color: var(--muted);
+    position: relative; z-index: 1;
+  }
+  footer span { color: var(--accent); }
+
+  /* ANIMATIONS */
+  .fade-in { opacity: 0; transform: translateY(22px); transition: opacity 0.65s ease, transform 0.65s ease; }
+  .fade-in.visible { opacity: 1; transform: none; }
+  .fade-in.d1 { transition-delay: 0.12s; }
+  .fade-in.d2 { transition-delay: 0.22s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero-inner, .about-grid { grid-template-columns: 1fr; }
+    .about-visual { position: static; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.featured { grid-column: span 1; }
+    .guides-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    section { padding: 5rem 0; }
+    .guides-grid { grid-template-columns: 1fr; }
+    .contact-card { padding: 2.5rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="grid-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">BD<span>.</span></div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#technologies">Stack</a>
+    <a href="#projects">Projects</a>
+    <a href="#articles">Articles</a>
+  </div>
+  <a href="#contact" class="nav-cta">Contact</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="fade-in">
+        <div class="hero-eyebrow"><span class="dot"></span>Available for Senior Roles · B2B Contractor</div>
+        <h1 class="hero-name">Bojan<br><em>Djokić</em></h1>
+        <div class="hero-title">Cloud Security Architect &nbsp;·&nbsp; SecOps &nbsp;·&nbsp; DevOps Engineer Expert</div>
+        <p class="hero-desc">
+          18+ years of international experience (Iceland, Norway, Serbia) designing, deploying, and governing
+          secure Azure-based platforms across regulated industries — banking, healthcare, energy, insurance, retail, and defense.
+        </p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn-primary">View Projects →</a>
+          <a href="#contact" class="btn-outline">Let's Talk</a>
+        </div>
+        <div class="hero-badges">
+          <span class="badge">Azure Solutions Architect Expert (AZ-305)</span>
+          <span class="badge">Azure DevOps Engineer Expert (AZ-400)</span>
+          <span class="badge amber">CKS Advanced Training</span>
+          <span class="badge">Niš, Serbia · CET</span>
+        </div>
+      </div>
+
+      <div class="fade-in d1">
+        <div class="hero-card">
+          <div class="avatar-ring">
+            <div class="avatar-inner">
+              <!-- To add your photo: <img src="your-photo.jpg" alt="Bojan Djokić"> -->
+               <img src="assets/img/bojan.jpg" alt="Bojan Djokić">
+            </div>
+          </div>
+          <div class="hero-card-name">Bojan Djokić</div>
+          <div class="hero-card-sub">AetherOps Technologies · Niš, Serbia</div>
+          <div class="cert-chips">
+            <span class="cert-chip">AZ-305 Expert</span>
+            <span class="cert-chip">AZ-400 Expert</span>
+            <span class="cert-chip">AZ-104 Associate</span>
+            <span class="cert-chip">MCSE: Cloud 2016</span>
+            <span class="cert-chip">CKS Training</span>
+            <span class="cert-chip">Big Data 2018</span>
+          </div>
+          <div class="stats-grid">
+            <div class="stat"><div class="stat-val">18+</div><div class="stat-lbl">Yrs Exp.</div></div>
+            <div class="stat"><div class="stat-val">2.4K+</div><div class="stat-lbl">Azure Subs.</div></div>
+            <div class="stat"><div class="stat-val">20+</div><div class="stat-lbl">Clients</div></div>
+          </div>
+          <div class="lang-chips">
+            <span class="lang-chip">🇬🇧 English — Native</span>
+            <span class="lang-chip">🇳🇴 Norwegian — B2</span>
+            <span class="lang-chip">🇷🇸 Serbian — Native</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-visual fade-in">
+        <div class="about-photo-frame">
+          <div class="about-photo-placeholder">
+          <!-- To add your photo: <img src="your-photo.jpg" alt="Bojan Djokić"> -->
+           <img src="assets/img/bojan.jpg" alt="Bojan Djokić"></div>
+          <div class="about-corner">
+            <div class="about-corner-label">Based in</div>
+            <div class="about-corner-val">Niš, Serbia</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-text fade-in d1">
+        <div class="section-label">About Me</div>
+        <h2 class="section-title">Security-first. Architecture-driven. Results-obsessed.</h2>
+        <p>
+          I'm a <strong>Microsoft-certified Cloud Security Architect and DevOps Engineer Expert</strong> with
+          18+ years of international experience across Iceland, Norway, and Serbia. I specialize in designing,
+          deploying, and governing secure Azure platforms for regulated industries where failure isn't an option.
+        </p>
+        <p>
+          My expertise spans <strong>Zero Trust security architecture</strong>, multi-tenant identity federation,
+          fine-grained RBAC, managed identity patterns, Key Vault CMK lifecycle management, WAF and API gateway
+          security, container security on AKS, and SIEM-driven audit and compliance.
+        </p>
+        <p>
+          I consistently deliver formal security architecture deliverables — <strong>threat models, HLD/LLD,
+          network topology diagrams, data flow diagrams, and security control matrices</strong> — aligned with
+          the Azure Well-Architected Framework, NIST CSF, CIS Benchmarks, HIPAA, and ISO 27001.
+        </p>
+        <p>
+          Beyond technical delivery, I lead cross-functional teams, engage enterprise stakeholders, and provide
+          <strong>pre-sales security architecture guidance</strong> for large enterprise bids. I'm currently
+          running <strong>AetherOps Technologies</strong>, my independent consulting practice, and conducting
+          research on AI workload security architecture for multi-tenant platforms.
+        </p>
+
+        <div class="clients-label">Notable Clients</div>
+        <div class="clients-list">
+          <span class="client-tag">Optum</span><span class="client-tag">Ahold Delhaize</span>
+          <span class="client-tag">Willis Towers Watson</span><span class="client-tag">Erste Bank</span>
+          <span class="client-tag">Maersk Tankers</span><span class="client-tag">RSA Ireland</span>
+          <span class="client-tag">NATO</span><span class="client-tag">Equinor</span>
+          <span class="client-tag">DNB Bank</span><span class="client-tag">SpareBank1</span>
+          <span class="client-tag">Unilever</span><span class="client-tag">easyJet</span>
+          <span class="client-tag">Anglo-American</span><span class="client-tag">UPM</span>
+          <span class="client-tag">LEO Pharma</span><span class="client-tag">Nilfisk</span>
+          <span class="client-tag">COOP Denmark</span><span class="client-tag">Fujitsu London</span>
+          <span class="client-tag">Petoro</span><span class="client-tag">Rogaland Gov.</span>
+        </div>
+
+        <div class="clients-label">Frameworks & Standards</div>
+        <div class="fw-row">
+          <span class="fw-tag">NIST CSF</span><span class="fw-tag">CIS Benchmarks</span>
+          <span class="fw-tag">ISO 27001</span><span class="fw-tag">HIPAA</span>
+          <span class="fw-tag">SOC 2</span><span class="fw-tag">GDPR</span>
+          <span class="fw-tag">Azure Well-Architected</span><span class="fw-tag">Zero Trust</span>
+          <span class="fw-tag">OWASP Top 10</span><span class="fw-tag">Azure CAF</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <div class="section-label">Experience</div>
+    <h2 class="section-title">Career Timeline</h2>
+    <p class="section-sub">18 years of hands-on delivery across Iceland, Norway, and Serbia — government PKI to enterprise-scale cloud security architecture.</p>
+
+    <div class="timeline fade-in">
+
+      <div class="tl-item">
+        <div class="tl-dot green"></div>
+        <div class="tl-meta">
+          <span class="tl-period">June 2025 – Present</span>
+          <span class="tl-type">Independent · Remote</span>
+        </div>
+        <div class="tl-role">Independent Cloud Security Architect</div>
+        <div class="tl-company">AetherOps Technologies</div>
+        <p class="tl-desc">
+          Cloud security architecture and enterprise integration consulting for international clients. Security
+          architecture reviews using Azure Security Benchmark and CIS Azure Foundations. Designing secure landing
+          zones with integrated Azure Policy, RBAC, and network segmentation. Delivering threat models, security
+          control matrices, HLD/LLD aligned with NIST CSF and Azure Well-Architected Framework.
+          Currently conducting PoC on AI workload security: agent isolation, AKS micro-segmentation, prompt
+          injection detection, PII redaction, and OPA-based policy engines for LLM agent deployments.
+        </p>
+        <div class="tl-tags">
+          <span class="tl-tag">Azure Security Benchmark</span><span class="tl-tag">CIS Azure Foundations</span>
+          <span class="tl-tag">Landing Zones</span><span class="tl-tag">AKS</span>
+          <span class="tl-tag">OPA</span><span class="tl-tag">Terraform</span>
+          <span class="tl-tag">AI Security PoC</span><span class="tl-tag">Pre-Sales Architecture</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-meta">
+          <span class="tl-period">Feb 2025 – May 2025</span>
+          <span class="tl-type">Full-time · Belgrade</span>
+        </div>
+        <div class="tl-role">Lead DevOps Engineer</div>
+        <div class="tl-company">Luxoft (via DXL Technology)</div>
+        <div class="tl-client">Client: <span>Optum — U.S. Healthcare (HIPAA Regulated)</span></div>
+        <p class="tl-desc">
+          Enterprise-scale security for healthcare applications across 2,400+ Azure subscriptions.
+          Implemented Azure WAF policies defending against OWASP Top 10. Designed Ingress-as-a-Service
+          security architecture for consistent AKS controls at scale. Security analysis identifying HIPAA
+          compliance gaps. Security automation scripts with GitHub Actions GHE pipelines. Secure
+          containerisation with Podman including vulnerability scanning and image hardening.
+        </p>
+        <div class="tl-tags">
+          <span class="tl-tag">Azure WAF</span><span class="tl-tag">AKS Security</span>
+          <span class="tl-tag">GitHub Actions GHE</span><span class="tl-tag">Terraform</span>
+          <span class="tl-tag">Golang</span><span class="tl-tag">Podman</span>
+          <span class="tl-tag">HIPAA</span><span class="tl-tag">OWASP Top 10</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot amber"></div>
+        <div class="tl-meta">
+          <span class="tl-period">Sep 2023 – Feb 2025</span>
+          <span class="tl-type">Full-time · Belgrade</span>
+        </div>
+        <div class="tl-role">Lead System Engineer / Architect & DevOps Engineer</div>
+        <div class="tl-company">EPAM Systems</div>
+        <div class="tl-client">Clients: <span>Ahold Delhaize (Retail) · Willis Towers Watson (Insurance)</span></div>
+        <p class="tl-desc">
+          <strong style="color:var(--text);font-weight:500">Ahold Delhaize</strong> — Secure-by-design architecture per Azure Well-Architected Framework.
+          Azure API Management (OAuth 2.0, rate limiting, threat protection). CI/CD with Key Vault secrets management — deployment time ↓30%.
+          RBAC and least privilege — security exposure ↓40%. Security-focused HLD, LLD, threat models.<br><br>
+          <strong style="color:var(--text);font-weight:500">Willis Towers Watson</strong> — Azure Managed Applications with Pulumi IaC security controls.
+          AKS: network policies, pod security standards, RBAC. Azure Key Vault secrets management. Azure Monitor and Log Analytics for security event tracking.
+        </p>
+        <div class="tl-tags">
+          <span class="tl-tag">Azure API Management</span><span class="tl-tag">OAuth 2.0</span>
+          <span class="tl-tag">AKS</span><span class="tl-tag">Key Vault</span>
+          <span class="tl-tag">Pulumi</span><span class="tl-tag">GitHub Actions</span>
+          <span class="tl-tag">Azure DevOps</span><span class="tl-tag">Terraform</span><span class="tl-tag">C#</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-meta">
+          <span class="tl-period">Sep 2022 – Sep 2023</span>
+          <span class="tl-type">Full-time · Belgrade</span>
+        </div>
+        <div class="tl-role">Senior Microsoft Cloud Engineer / Technical Architect</div>
+        <div class="tl-company">Mainstream</div>
+        <div class="tl-client">Clients: <span>Erste Bank (Banking) · Vivanco (Manufacturing) · Telco</span></div>
+        <p class="tl-desc">
+          <strong style="color:var(--text);font-weight:500">Erste Bank</strong> — AD security assessment and remediation, CIS Benchmark server hardening,
+          RBAC/MFA/Conditional Access, security logging for regulatory compliance, SCCM patch management.<br><br>
+          <strong style="color:var(--text);font-weight:500">Vivanco & Telco</strong> — Fault-tolerant DRaaS architecture, Azure Backup (BaaS) with encryption controls,
+          retention policies, risk analysis, comprehensive HLD/LLD documentation.
+        </p>
+        <div class="tl-tags">
+          <span class="tl-tag">AD Security</span><span class="tl-tag">CIS Benchmarks</span>
+          <span class="tl-tag">Conditional Access</span><span class="tl-tag">MFA</span>
+          <span class="tl-tag">Azure Backup</span><span class="tl-tag">Azure Site Recovery</span>
+          <span class="tl-tag">SCCM</span><span class="tl-tag">DRaaS</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot amber"></div>
+        <div class="tl-meta">
+          <span class="tl-period">Mar 2021 – Jul 2022</span>
+          <span class="tl-type">Hybrid · Belgrade</span>
+        </div>
+        <div class="tl-role">Customer Solutions Architect (CSA)</div>
+        <div class="tl-company">GDC Services (ICL / Fujitsu)</div>
+        <div class="tl-client">Clients: <span>Maersk Tankers · RSA Ireland · COOP Denmark · Hartmann · Nilfisk · Fujitsu London</span></div>
+        <p class="tl-desc">
+          <strong style="color:var(--text);font-weight:500">Maersk Tankers</strong> — ADFS to PTA migration, MFA, Conditional Access, secure API auth, threat models/HLD/LLD.<br>
+          <strong style="color:var(--text);font-weight:500">RSA Ireland</strong> — Azure CAF, Enterprise-Scale Landing Zones, Azure Policy enforcement, Azure Blueprints (ISO compliance), Azure DevOps YAML pipelines.<br>
+          <strong style="color:var(--text);font-weight:500">COOP Denmark</strong> — PKI assessment, certificate management, hybrid integration, server hardening (2012 R2 → 2019).<br>
+          <strong style="color:var(--text);font-weight:500">Fujitsu London</strong> — MSSP architecture, security governance for multi-tenant environments.
+        </p>
+        <div class="tl-tags">
+          <span class="tl-tag">ADFS → PTA</span><span class="tl-tag">Entra ID</span>
+          <span class="tl-tag">Landing Zones</span><span class="tl-tag">Azure Policy</span>
+          <span class="tl-tag">Azure Blueprints</span><span class="tl-tag">ISO 27001</span>
+          <span class="tl-tag">PKI</span><span class="tl-tag">YAML Pipelines</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-meta">
+          <span class="tl-period">Mar 2018 – Mar 2021</span>
+          <span class="tl-type">On-site · Stavanger, Norway</span>
+        </div>
+        <div class="tl-role">Lead Technical Architect</div>
+        <div class="tl-company">HCL Technologies</div>
+        <div class="tl-client">Clients: <span>Equinor · DNB Bank · UPM · Anglo-American · easyJet · Unilever · EDF Luminus · LEO Pharma</span></div>
+        <p class="tl-desc">
+          <strong style="color:var(--text);font-weight:500">UPM</strong> — Zero Trust: Azure AD, PIM, RBAC, Conditional Access, PAM, Rights Management Services (RMS), HLD/LLD.<br>
+          <strong style="color:var(--text);font-weight:500">DNB Bank</strong> — Database encryption, HA DHCP Failover Cluster, AD IAM with RBAC and GPO hardening.<br>
+          <strong style="color:var(--text);font-weight:500">Anglo-American</strong> — Azure AD SSO, Application Proxy for secure remote access, PIM governance.<br>
+          <strong style="color:var(--text);font-weight:500">Unilever</strong> — AD DS LLD for 5-forest Azure AD integration.<br>
+          <strong style="color:var(--text);font-weight:500">Equinor</strong> — Azure SQL encryption, SCCM Technical Lead.<br>
+          <strong style="color:var(--text);font-weight:500">easyJet</strong> — Windows Autopilot, M365, ADFS, SCCM, GPO hardening.
+        </p>
+        <div class="tl-tags">
+          <span class="tl-tag">Zero Trust</span><span class="tl-tag">Azure PIM</span>
+          <span class="tl-tag">PAM</span><span class="tl-tag">RMS</span>
+          <span class="tl-tag">Azure AD App Proxy</span><span class="tl-tag">Database Encryption</span>
+          <span class="tl-tag">ADFS</span><span class="tl-tag">PKI</span><span class="tl-tag">SCCM</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot amber"></div>
+        <div class="tl-meta">
+          <span class="tl-period">Feb 2016 – Mar 2018</span>
+          <span class="tl-type">On-site · Stavanger, Norway</span>
+        </div>
+        <div class="tl-role">Active Directory Specialist – Architect</div>
+        <div class="tl-company">Rogaland County Council (Government)</div>
+        <p class="tl-desc">
+          Secure infrastructure for Norwegian government. Architected AD with hardening and access controls.
+          PKI design for certificate-based authentication. DirectAccess always-on VPN with device authentication.
+          Hybrid cloud architecture combining on-premises and Azure (IaaS/PaaS/SaaS).
+          PoC: Azure Data Lake, Azure Stream Analytics, Azure SQL Elastic Pools with encryption and RBAC.
+        </p>
+        <div class="tl-tags">
+          <span class="tl-tag">Active Directory</span><span class="tl-tag">PKI</span>
+          <span class="tl-tag">DirectAccess</span><span class="tl-tag">Hybrid Cloud</span>
+          <span class="tl-tag">Azure Data Lake</span><span class="tl-tag">Azure Stream Analytics</span><span class="tl-tag">Azure SQL</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-meta">
+          <span class="tl-period">Jan 2012 – Nov 2015</span>
+          <span class="tl-type">On-site · Stavanger, Norway</span>
+        </div>
+        <div class="tl-role">Senior IT Consultant – Enterprise Security Architect</div>
+        <div class="tl-company">EVRY</div>
+        <div class="tl-client">Clients: <span>DNB Bank · SpareBank1 · NATO · Petoro · Gjensidige · Storebrand · Oljedirektoratet · UiS</span></div>
+        <p class="tl-desc">
+          Designed PKI for NATO, Petoro, University of Stavanger, and Premier Oil. Secure authentication:
+          DirectAccess, RADIUS, certificate-based. SQL encryption and Failover Clustering for DNB and SpareBank1.
+          High-availability datacentre achieving 4–5 nines uptime. Pre-sales security architecture for enterprise bids,
+          HLD/LLD, and architecture design sessions with C-level stakeholders.
+        </p>
+        <div class="tl-tags">
+          <span class="tl-tag">PKI / CA</span><span class="tl-tag">NATO</span>
+          <span class="tl-tag">DirectAccess</span><span class="tl-tag">ADFS</span>
+          <span class="tl-tag">SQL Encryption</span><span class="tl-tag">Failover Clustering</span>
+          <span class="tl-tag">System Center 2012</span><span class="tl-tag">4–5 Nines HA</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot amber"></div>
+        <div class="tl-meta">
+          <span class="tl-period">Jan 2007 – Oct 2011</span>
+          <span class="tl-type">On-site · Reykjavik, Iceland</span>
+        </div>
+        <div class="tl-role">Information Technology Specialist</div>
+        <div class="tl-company">Tölvulistinn</div>
+        <p class="tl-desc">
+          Full-time IT specialist delivering Windows Server and AD administration, Exchange Server maintenance,
+          VPN administration, and pre-sales technical assistance for SMB and enterprise clients across Iceland.
+          Foundations in infrastructure engineering that underpin 18 years of career growth.
+        </p>
+        <div class="tl-tags">
+          <span class="tl-tag">Windows Server 2003/2008</span><span class="tl-tag">Active Directory</span>
+          <span class="tl-tag">Exchange Server 2003</span><span class="tl-tag">SCCM 2007</span><span class="tl-tag">VPN</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TECHNOLOGIES -->
+<section id="technologies">
+  <div class="container">
+    <div class="section-label">Technologies</div>
+    <h2 class="section-title">Technical Stack</h2>
+    <p class="section-sub">Deep expertise across the full Azure security and cloud-native toolchain, with 18 years of delivery from PKI to Zero Trust to AKS.</p>
+
+    <div class="tech-legend fade-in">
+      <div class="tech-legend-item"><div class="lvl lvl-expert"></div>Expert</div>
+      <div class="tech-legend-item"><div class="lvl lvl-advanced"></div>Advanced</div>
+      <div class="tech-legend-item"><div class="lvl lvl-proficient"></div>Proficient</div>
+    </div>
+
+    <div class="tech-categories fade-in">
+      <div>
+        <div class="tech-cat-label">Security Architecture</div>
+        <div class="tech-grid">
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Zero Trust Architecture</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Threat Modelling</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>HLD / LLD</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Security Control Matrices</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Azure Security Benchmark</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>CIS Benchmarks</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Pre-Sales Architecture</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>NIST CSF</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Network Topology Diagrams</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tech-cat-label">Identity & Access Management</div>
+        <div class="tech-grid">
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Microsoft Entra ID</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Conditional Access</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>MFA / PIM</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>RBAC (Row & Column Level)</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Managed Identities</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>ADFS / PTA Migration</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>PKI / Certificate Authority</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Cross-Tenant Federation</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Workload Identity / OIDC</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Azure AD App Proxy</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Rights Management (RMS)</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tech-cat-label">Data Protection & Key Management</div>
+        <div class="tech-grid">
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Azure Key Vault</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Customer-Managed Keys (CMK)</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>TLS 1.3</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Encryption at Rest / In Transit</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>TDE (Transparent Data Encryption)</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Dynamic Data Masking</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>DLP</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>WORM Immutable Audit Logs</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tech-cat-label">Network & Infrastructure Security</div>
+        <div class="tech-grid">
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Azure Firewall</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Private Endpoints</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>NSG (Deny-by-Default)</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>VNet Segmentation</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>WAF (OWASP CRS)</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Application Gateway</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>DDoS Standard</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>DNS Private Zones</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Micro-segmentation</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>ExpressRoute / VPN Gateway</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Geo-blocking</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tech-cat-label">Container & Application Security</div>
+        <div class="tech-grid">
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>AKS Security</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Kubernetes Network Policies</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Pod Security Standards</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>OPA / Gatekeeper</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Azure API Management</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Image Scanning & Signing</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Falco / Defender for Containers</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Podman</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Helm</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tech-cat-label">SIEM, Monitoring & Compliance</div>
+        <div class="tech-grid">
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Microsoft Sentinel</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Log Analytics</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Azure Monitor</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Application Insights</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Prometheus</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Incident Response Playbooks</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Defender for Cloud</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tech-cat-label">IaC, DevOps & CI/CD</div>
+        <div class="tech-grid">
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Terraform</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Azure DevOps YAML Pipelines</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>GitHub Actions</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Enterprise-Scale Landing Zones</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>ARM Templates</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Bicep</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Pulumi</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Argo CD / GitOps</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>DevSecOps Automation</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>CI/CD Security Gates</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tech-cat-label">Databases, Cloud & Programming</div>
+        <div class="tech-grid">
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Azure SQL (Security & Encryption)</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Azure PostgreSQL (Security)</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>PowerShell</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Python</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>C#</div>
+          <div class="tech-pill"><div class="lvl lvl-proficient"></div>Golang</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tech-cat-label">Business Continuity & Disaster Recovery</div>
+        <div class="tech-grid">
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Azure Site Recovery</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>Azure Backup (BaaS)</div>
+          <div class="tech-pill"><div class="lvl lvl-expert"></div>RTO / RPO Design</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>DRaaS Architecture</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Geo-Redundant Storage</div>
+          <div class="tech-pill"><div class="lvl lvl-advanced"></div>Automated Failover</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="section-label">Projects</div>
+    <h2 class="section-title">Selected Work</h2>
+    <p class="section-sub">Architecture, security engineering, and DevSecOps delivery across Fortune 500, banking, healthcare, and government clients.</p>
+
+    <div class="projects-grid fade-in">
+
+      <div class="project-card featured">
+        <div class="project-featured-badge">Featured · Healthcare Security at Scale</div>
+        <div class="project-title">Cloud Security Across 2,400+ Azure Subscriptions</div>
+        <div class="project-client">Optum (U.S. Healthcare) via Luxoft · Feb–May 2025 · HIPAA Regulated</div>
+        <p class="project-desc">
+          Enterprise-scale security engineering for a major US healthcare platform. Implemented Azure WAF defending against OWASP Top 10 threats.
+          Designed Ingress-as-a-Service architecture for consistent AKS security controls at subscription scale.
+          Security analysis across 2,400+ subscriptions identifying HIPAA compliance gaps. Security automation integrated into GitHub Actions GHE pipelines.
+          Secure containerisation with Podman: vulnerability scanning and image hardening.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">Azure WAF</span><span class="project-tag">AKS Security</span>
+          <span class="project-tag">HIPAA</span><span class="project-tag">OWASP Top 10</span>
+          <span class="project-tag">GitHub Actions GHE</span><span class="project-tag">Terraform</span>
+          <span class="project-tag">Podman</span><span class="project-tag">Golang</span>
+          <span class="project-tag">2,400+ Subscriptions</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">Offer Engine Ecosystem — Secure-by-Design</div>
+        <div class="project-client">Ahold Delhaize (Fortune 500 Retail) via EPAM · 2023–2025</div>
+        <p class="project-desc">
+          Azure Well-Architected Framework security pillar. Azure API Management (OAuth 2.0, rate limiting, threat protection). CI/CD + Key Vault secrets — deployment time ↓30%. RBAC and least privilege — security exposure ↓40%. HLD, LLD, threat models for REST API integration patterns.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">Azure API Management</span><span class="project-tag">OAuth 2.0</span>
+          <span class="project-tag">Key Vault</span><span class="project-tag">RBAC</span><span class="project-tag">Azure DevOps</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">Azure Managed Applications Security</div>
+        <div class="project-client">Willis Towers Watson (Insurance) via EPAM · 2023–2025</div>
+        <p class="project-desc">
+          Azure Managed Applications with Pulumi IaC security controls. AKS: network policies, pod security standards, RBAC. Azure Key Vault secrets management. Azure Monitor and Log Analytics for security event tracking and alerting.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">Pulumi</span><span class="project-tag">AKS</span>
+          <span class="project-tag">Pod Security Standards</span><span class="project-tag">Key Vault</span><span class="project-tag">Log Analytics</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">Enterprise-Scale Landing Zones — Insurance</div>
+        <div class="project-client">RSA Ireland via GDC Services / Fujitsu · 2021–2022</div>
+        <p class="project-desc">
+          Azure Cloud Adoption Framework with enterprise-scale Landing Zones, security baselines, and Azure Policy enforcement. Azure Blueprints with embedded ISO 27001 compliance validation. Azure DevOps YAML pipelines for governed CI/CD.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">Landing Zones</span><span class="project-tag">Azure Policy</span>
+          <span class="project-tag">Azure Blueprints</span><span class="project-tag">ISO 27001</span><span class="project-tag">YAML Pipelines</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">ADFS to Entra ID/PTA Migration</div>
+        <div class="project-client">Maersk Tankers (Shipping) via GDC Services · 2021–2022</div>
+        <p class="project-desc">
+          Migrated ADFS to Pass-Through Authentication (PTA) improving security posture. MFA and Conditional Access policy design. Secure API integrations. Threat model, HLD, and LLD for complete authentication architecture.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">ADFS → PTA</span><span class="project-tag">Entra ID</span>
+          <span class="project-tag">MFA</span><span class="project-tag">Conditional Access</span><span class="project-tag">Threat Model</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">Zero Trust Implementation — Manufacturing</div>
+        <div class="project-client">UPM (Finland) via HCL Technologies · 2018–2021</div>
+        <p class="project-desc">
+          Zero Trust architecture using Azure AD, PIM, RBAC, Conditional Access. AD security assessment identifying critical vulnerabilities. Identity governance with PAM. Rights Management Services (RMS) for data protection. HLD/LLD documentation.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">Zero Trust</span><span class="project-tag">Azure PIM</span>
+          <span class="project-tag">PAM</span><span class="project-tag">RMS</span><span class="project-tag">Conditional Access</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">PKI Architecture for NATO & Norwegian Government</div>
+        <div class="project-client">NATO · Petoro · UiS via EVRY · 2012–2015</div>
+        <p class="project-desc">
+          PKI solutions for NATO, Petoro, University of Stavanger, and Premier Oil. DirectAccess, RADIUS, certificate-based authentication. SQL encryption and Failover Clustering for DNB and SpareBank1. High-availability datacentre infrastructure: 4–5 nines uptime.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">PKI / CA</span><span class="project-tag">NATO</span>
+          <span class="project-tag">DirectAccess</span><span class="project-tag">SQL Encryption</span><span class="project-tag">4–5 Nines HA</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-title">Banking Security Hardening & Governance</div>
+        <div class="project-client">Erste Bank (Banking) via Mainstream · 2022–2023</div>
+        <p class="project-desc">
+          AD security assessment and remediation. CIS Benchmark server hardening. RBAC, MFA, Conditional Access. Security logging for regulatory compliance auditing. SCCM patch management workflows. Full compliance with banking regulatory requirements.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">AD Security</span><span class="project-tag">CIS Benchmarks</span>
+          <span class="project-tag">MFA</span><span class="project-tag">Conditional Access</span><span class="project-tag">Banking Compliance</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLES -->
+<section id="articles">
+  <div class="container">
+    <div class="section-label">Publications</div>
+    <h2 class="section-title">Technical Articles</h2>
+    <p class="section-sub">In-depth articles published on LinkedIn, covering cloud security architecture, Azure governance, and enterprise engineering.</p>
+
+    <div class="guides-grid fade-in">
+
+      <a href="https://www.linkedin.com/pulse/azure-well-architected-framework-waf-bojan-djokic-kx3ff/?trackingId=0ht04PinT2uqKg7SJxFfnQ%3D%3D" class="guide-card-link">
+      <div class="guide-card">
+        <span class="guide-icon">🏗️</span>
+        <div class="guide-category">Architecture · Azure</div>
+        <div class="guide-title">Azure Well-Architected Framework: Practical Use Cases</div>
+        <p class="guide-desc">Applying all five pillars of the Azure Well-Architected Framework in real-world enterprise scenarios — from security to cost optimization.</p>
+        <div class="guide-footer">
+          <span class="guide-read">LinkedIn Article</span>
+          <span class="guide-arrow">→</span>
+        </div>
+      </div>
+      </a>
+
+      <a href="https://www.linkedin.com/pulse/implementing-azure-enterprise-scale-landing-zones-deep-bojan-djokic-q5ajf/?trackingId=CrahF8QIT6SFnlUpJQJdWA%3D%3D" class="guide-card-link">
+      <div class="guide-card">
+        <span class="guide-icon">🏢</span>
+        <div class="guide-category">Architecture · Governance</div>
+        <div class="guide-title">Implementing Enterprise-Scale Landing Zones</div>
+        <p class="guide-desc">Step-by-step guide to deploying Enterprise-Scale Landing Zones with security baselines, Azure Policy governance, and network topology design.</p>
+        <div class="guide-footer">
+          <span class="guide-read">LinkedIn Article</span>
+          <span class="guide-arrow">→</span>
+        </div>
+      </div>
+      </a>
+
+      <a href="https://www.linkedin.com/pulse/azure-zero-trust-security-model-bojan-djokic-elqtf/?trackingId=A5tXCCmiRwu0S4Bk70rklA%3D%3D" class="guide-card-link">
+      <div class="guide-card">
+        <span class="guide-icon">🛡️</span>
+        <div class="guide-category">Security · Identity</div>
+        <div class="guide-title">Zero Trust Security Model in Azure</div>
+        <p class="guide-desc">Practical Zero Trust on Azure: identity, network segmentation, Conditional Access, PIM, and audit logging across regulated environments.</p>
+        <div class="guide-footer">
+          <span class="guide-read">LinkedIn Article</span>
+          <span class="guide-arrow">→</span>
+        </div>
+      </div>
+      </a>
+
+      <a href="https://www.linkedin.com/pulse/kubernetes-architecture-bojan-djokic-0ig0f/?trackingId=CrahF8QIT6SFnlUpJQJdWA%3D%3D" class="guide-card-link">
+      <div class="guide-card">
+        <span class="guide-icon">☸️</span>
+        <div class="guide-category">Containers · DevOps</div>
+        <div class="guide-title">Containerized Deployments with Kubernetes</div>
+        <p class="guide-desc">Production-grade Kubernetes deployments: pod security standards, network policies, image scanning, and GitOps-driven delivery.</p>
+        <div class="guide-footer">
+          <span class="guide-read">LinkedIn Article</span>
+          <span class="guide-arrow">→</span>
+        </div>
+      </div>
+      </a>
+
+      <a href="https://www.linkedin.com/pulse/optimizing-azure-api-management-microservices-bojan-djokic-nyzpf/?trackingId=CrahF8QIT6SFnlUpJQJdWA%3D%3D" class="guide-card-link">
+        <div class="guide-card">
+        <span class="guide-icon">🔌</span>
+        <div class="guide-category">API Security · Architecture</div>
+        <div class="guide-title">Optimizing Azure API Management in Microservices</div>
+        <p class="guide-desc">API gateway security patterns: OAuth 2.0, rate limiting, threat protection, CSRF defence, and input validation across microservices architectures.</p>
+        <div class="guide-footer">
+          <span class="guide-read">LinkedIn Article</span>
+          <span class="guide-arrow">→</span>
+        </div>
+      </div>
+      </a>
+
+      <div class="guide-card">
+        <span class="guide-icon">🔬</span>
+        <div class="guide-category">Research · AI Security</div>
+        <div class="guide-title">AI Workload Security on AKS — PoC Research</div>
+        <p class="guide-desc">Ongoing research: agent isolation, AKS micro-segmentation, prompt injection detection, PII redaction, and OPA policy engines for LLM deployments.</p>
+        <div class="guide-footer">
+          <span class="guide-read">In Progress · 2025</span>
+          <span class="guide-arrow">→</span>
+        </div>
+      </div>
+
+    </div>
+
+    <p style="font-family:var(--mono);font-size:0.7rem;color:var(--muted);margin-top:2rem;text-align:center">
+      More publications available on
+      <a href="https://www.linkedin.com/in/bojan-djokic-62444078/recent-activity/articles/" target="_blank" style="color:var(--accent)">LinkedIn Articles →</a>
+    </p>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-inner">
+      <div class="section-label">Contact</div>
+      <h2 class="section-title">Let's Work Together</h2>
+      <p class="section-sub" style="margin:0 auto 2rem;text-align:center">
+        Available for senior contractor roles in cloud security architecture, Azure DevOps engineering,
+        and enterprise security consulting. B2B · Remote · CET.
+      </p>
+      <div class="contact-card fade-in">
+        <p style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase">Get in touch</p>
+        <a href="mailto:bojandjokic74@hotmail.com" class="contact-email">bojandjokic74@hotmail.com</a>
+        <div class="contact-phone">+381 64 28 72 717</div>
+        <p style="color:var(--muted);font-size:0.85rem;max-width:400px;margin:0.75rem auto 0">
+          AZ-305 Expert · AZ-400 Expert · 18 years of international delivery across 20+ enterprise clients.
+        </p>
+        <div class="contact-links">
+          <a href="https://www.linkedin.com/in/bojan-djokic-62444078" target="_blank" class="contact-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://github.com/bojan0807" target="_blank" class="contact-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="assets/docs/Bojan_Djokic_CV.pdf" target="_blank" class="contact-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            Download CV
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <span>Bojan Djokić</span> · Cloud Security Architect · AeherOps Technologies · Niš, Serbia
+  </div>
+</footer>
+
+<script>
+/* ANIMATED GRID */
+const canvas = document.getElementById('grid-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, t = 0;
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  const COLS = 30, ROWS = 20, cw = W / COLS, ch = H / ROWS;
+  ctx.strokeStyle = 'rgba(56,189,248,0.06)'; ctx.lineWidth = 0.5;
+  for (let x = 0; x <= COLS; x++) { ctx.beginPath(); ctx.moveTo(x*cw,0); ctx.lineTo(x*cw,H); ctx.stroke(); }
+  for (let y = 0; y <= ROWS; y++) { ctx.beginPath(); ctx.moveTo(0,y*ch); ctx.lineTo(W,y*ch); ctx.stroke(); }
+  for (let xi = 0; xi <= COLS; xi++) {
+    for (let yi = 0; yi <= ROWS; yi++) {
+      const p = (Math.sin(t*0.5+xi*0.35+yi*0.25)+1)/2;
+      ctx.beginPath(); ctx.arc(xi*cw, yi*ch, p*2.2, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(56,189,248,${p*0.44})`; ctx.fill();
+    }
+  }
+  const sy = ((t*22) % (H+60)) - 30;
+  const g = ctx.createLinearGradient(0,sy-30,0,sy+30);
+  g.addColorStop(0,'transparent'); g.addColorStop(0.5,'rgba(56,189,248,0.05)'); g.addColorStop(1,'transparent');
+  ctx.fillStyle = g; ctx.fillRect(0, sy-30, W, 60);
+  t += 0.033; requestAnimationFrame(draw);
+}
+draw();
+
+/* FADE IN */
+const io = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), { threshold: 0.07 });
+document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+/* NAV HIGHLIGHT */
+const secs = document.querySelectorAll('section[id]');
+const links = document.querySelectorAll('.nav-links a');
+const navIo = new IntersectionObserver(e => {
+  e.forEach(x => { if(x.isIntersecting) links.forEach(a => { a.style.color = a.getAttribute('href')==='#'+x.target.id ? 'var(--accent)' : ''; }); });
+}, { threshold: 0.3 });
+secs.forEach(s => navIo.observe(s));
+</script>
+</body>
+</html>
