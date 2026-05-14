@@ -1,7 +1,7 @@
-# bojandjokic
+# Bojan Djokic
 Personal portfolio &amp; professional profile — Cloud Security Architect · SecOps · DevOps Engineer Expert
 
-# bojan-djokić — personal portfolio
+# Bojan-Djokić — personal portfolio
 
 > **Live site →** [bojan-djokic.github.io](https://bojan-djokic.github.io)
 
