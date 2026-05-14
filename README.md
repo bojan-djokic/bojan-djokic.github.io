@@ -1,7 +1,7 @@
 # Bojan Djokic
 Personal portfolio &amp; professional profile — Cloud Security Architect · SecOps · DevOps Engineer Expert
 
-# Bojan-Djokić — personal portfolio
+# Bojan-Djokić — Personal Portfolio
 
 > **Live site →** [bojan-djokic.github.io](https://bojan-djokic.github.io)
 
@@ -49,7 +49,7 @@ This is a single-page static site built with vanilla HTML, CSS, and JavaScript �
 
 ## Notable Clients
 
-Optum · Ahold Delhaize · Willis Towers Watson · DNB Bank · Erste Bank · NATO · Equinor · Maersk · RSA Ireland
+Optum · Ahold Delhaize · Willis Towers Watson · Unilever · AngloAmerican · Gjensidige ·DNB Bank · Erste Bank · NATO · Equinor · Maersk · RSA Ireland
 
 ---
 
