@@ -1,5 +1,5 @@
 # Bojan Djokic
-Personal portfolio &amp; professional profile — Cloud Security Architect · SecOps · DevOps Engineer Expert
+Personal portfolio &amp; professional profile — Principal Cloud Architect | Azure | Zero Trust | DevSecOps | Securing Enterprise Cloud at Scale  
 
 # Bojan-Djokić — Personal Portfolio
 
