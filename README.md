@@ -5,7 +5,7 @@ Personal portfolio &amp; professional profile — Principal Cloud Architect | Az
 
 > **Live site →** [bojan-djokic.github.io](https://bojan-djokic.github.io)
 
-Personal portfolio and professional profile of **Bojan Djokić** — Cloud Security Architect and Azure DevOps Engineer Expert with 18+ years of international experience.
+Personal portfolio and professional profile of **Bojan Djokić** — Principal Cloud Architect with 18+ years of international experience.
 
 ---
 
